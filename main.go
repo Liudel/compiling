@@ -1,10 +1,12 @@
 package main
 
 import (
-	"cp/lexer"
+	"cp/ast"
+	"cp/parser"
 )
 
 func main() {
-	a := &lexer.SimpleLexer{}
-	lexer.Dump(a.Tokenize("2+3*5"))
+	a := &parser.SimpleParser{}
+
+	ast.DumpAST(a.Parser("int age = 45*2+2;"), "")
 }

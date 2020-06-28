@@ -1,5 +1,9 @@
 package token
 
+import (
+	"fmt"
+)
+
 // TokenType 词法类型
 type TokenType string
 
@@ -90,4 +94,57 @@ func (st SimpleToken) GetText() string {
 // GetType 获取类型
 func (st SimpleToken) GetType() TokenType {
 	return st.Ttype
+}
+
+// SimpleTokenReader 词法读取器
+type SimpleTokenReader struct {
+	Tokens []Token
+	pos    int
+}
+
+// Read 读取
+func (s *SimpleTokenReader) Read() Token {
+	if s.pos < len(s.Tokens) {
+		result := s.Tokens[s.pos]
+		s.pos++
+		return result
+	}
+	return nil
+}
+
+// Peek 选取
+func (s *SimpleTokenReader) Peek() Token {
+	if s.pos < len(s.Tokens) {
+		return s.Tokens[s.pos]
+	}
+	return nil
+}
+
+// Unread 回退
+func (s *SimpleTokenReader) Unread() {
+	if s.pos > 0 {
+		s.pos--
+	}
+}
+
+// GetPosition 获取位置
+func (s *SimpleTokenReader) GetPosition() int {
+	return s.pos
+}
+
+// SetPosition 设置位置
+func (s *SimpleTokenReader) SetPosition(position int) {
+	if position >= 0 && position < len(s.Tokens) {
+		s.pos = position
+	}
+}
+
+// Dump 打印词法规则
+func Dump(reader TokenReader) {
+	fmt.Println("text\ttype")
+	var token Token
+
+	for token = reader.Read(); token != nil; token = reader.Read() {
+		fmt.Println(token.GetText() + "\t\t" + string(token.GetType()))
+	}
 }
