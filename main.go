@@ -8,5 +8,5 @@ import (
 func main() {
 	a := &parser.SimpleParser{}
 
-	ast.DumpAST(a.Parser("int age = 45*2+2;"), "")
+	ast.DumpAST(a.Parser("2+3+4;"), "")
 }

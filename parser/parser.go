@@ -150,6 +150,30 @@ func (sp *SimpleParser) Additive(tokens token.TokenReader) *ast.SimpleASTNode {
 	return node
 }
 
+// AdditiveOne 加法表达式结合错误
+func (sp *SimpleParser) AdditiveOne(tokens token.TokenReader) *ast.SimpleASTNode {
+	child1 := sp.Multiplicative(tokens)
+	node := child1
+	oneToken := tokens.Peek()
+	if child1 != nil && oneToken != nil {
+		if oneToken.GetType() == token.Plus || oneToken.GetType() == token.Minus {
+			oneToken = tokens.Read()
+			child2 := sp.Additive(tokens)
+			if child2 == nil {
+				panic("invalid additive expression, expecting the right part.")
+			}
+
+			node = &ast.SimpleASTNode{NodeType: ast.Additive, Text: oneToken.GetText()}
+			node.AddChild(child1)
+			node.AddChild(child2)
+			child1 = node
+
+		}
+	}
+
+	return node
+}
+
 // Multiplicative 乘法表达式
 func (sp *SimpleParser) Multiplicative(tokens token.TokenReader) *ast.SimpleASTNode {
 	child1 := sp.Primary(tokens)
